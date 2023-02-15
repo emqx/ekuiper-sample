@@ -1,0 +1,36 @@
+version: '3.4'
+
+services:
+  nanomq:
+    image: emqx/nanomq:0.15
+    container_name: nanomq
+    ports:
+      - "1883:1883"
+    restart: unless-stopped
+  manager:
+    image: emqx/ekuiper-manager:1.8.1
+    container_name: manager
+    ports:
+      - "9082:9082"
+    restart: unless-stopped
+    environment:
+      #      setting default eKuiper service, works since 1.8.0
+      DEFAULT_EKUIPER_ENDPOINT: "http://ekuiper:9081"
+  ekuiper:
+    # Here use slim version for tfLite and script node feature
+    # Use the slim-python version if you need the python plugin
+    image: lfedge/ekuiper:1.8.1-slim
+    ports:
+      - "9081:9081"
+      - "10081:10081"
+    container_name: ekuiper
+    hostname: ekuiper
+    restart: unless-stopped
+    user: root
+    volumes:
+      - /tmp/data:/kuiper/data
+      - /tmp/log:/kuiper/log
+    environment:
+      MQTT_SOURCE__DEFAULT__SERVER: "tcp://nanomq:1883"
+      KUIPER__BASIC__CONSOLELOG: "true"
+      KUIPER__BASIC__IGNORECASE: "false"

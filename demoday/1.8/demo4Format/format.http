@@ -1,0 +1,193 @@
+##### 1. Static protobuf serialization
+# Must write and build the protobuf file. Given a proto file
+# a. protoc --go_opt=Mhelloworld.proto=com.main --go_out=. helloworld.proto
+# b. Create the wrapper file, check /internal/converter/protobuf/test
+# c. Build it to get the so file, check doc or serialization.
+
+### 1.1 Register the schema
+POST http://{{host}}/schemas/protobuf
+Content-Type: application/json
+
+{
+  "name": "helloworld",
+  "file": "file:///kuiper/data/uploads/helloworld.proto",
+  "soFile": "file:///kuiper/data/uploads/helloworld.so"
+}
+
+### 1.2 Use the format in source
+### 0a056565656565
+POST http://{{host}}/streams
+Content-Type: application/json
+
+{
+  "sql": "create stream protoDemo () WITH (FORMAT=\"protobuf\", DATASOURCE=\"protoDemo\",SCHEMAID=\"helloworld.HelloRequest\")"
+}
+
+### 1.3 Rule to get the decoded data
+### Can try to create rule that access unknown field to see the error
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "id": "ruleDecode",
+  "sql": "SELECT * FROM protoDemo",
+  "actions": [
+    {
+      "mqtt": {
+        "server": "tcp://syno.home:1883",
+        "topic": "result/format/pb/decode",
+        "sendSingle": true
+      }
+    }
+  ]
+}
+
+### 1.4 Get the inferred schema
+GET http://{{host}}/streams/protoDemo/schema
+Content-Type: application/json
+
+
+##### 2. Custom Format Testing
+
+# Some format has schema, `custom` format must have soFile as the schema
+# 1. Development: example in internal/converter/custom/test
+# 2. Build: go build --buildmode=plugin -o data/test/myFormat.so internal/converter/custom/test/*.go
+# 2.1 Build in the go docker: docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp golang:1.18.5-alpine go build --buildmode=plugin -v -o myFormat.so
+
+### 2.1 Create a new custom format schema
+POST http://{{host}}/schemas/custom
+Content-Type: application/json
+
+{
+  "name": "myFormat",
+  "soFile": "file:///kuiper/data/uploads/test.so"
+}
+
+### 2.2 Use the format in source
+POST http://{{host}}/streams
+Content-Type: application/json
+
+{
+  "sql": "create stream customFormatStream () WITH (TYPE=\"httppush\", DATASOURCE=\"/demo/custom\", FORMAT=\"custom\", SCHEMAID=\"myFormat.Sample\", STRICT_VALIDATION=\"false\")"
+}
+
+### 2.3 Use the format in source
+### Send data
+### {"name":"test","age":10,"id":1,"hobbies":{"indoor":["chess"],"outdoor":["football"]}}
+### {"name":"test","age":10,"id":1}
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "id": "ruleCustomSource",
+  "sql": "SELECT * FROM customFormatStream",
+  "actions": [
+    {
+      "mqtt": {
+        "server": "tcp://syno.home:1883",
+        "topic": "result/customSource",
+        "format": "json",
+        "sendSingle": true
+      }
+    }
+  ]
+}
+
+### 2.4 消息发送到httppush /api/data
+POST http://localhost:10081/demo/custom
+Content-Type: application/json
+
+{
+  "name": "test",
+  "age": 10,
+  "id": 1,
+  "hobbies": {
+    "indoor": [
+      "chess"
+    ],
+    "outdoor": [
+      "football"
+    ]
+  }
+}
+
+### 2.5 GET inferred schema from stream
+GET http://{{host}}/streams/customFormatStream/schema
+Content-Type: application/json
+
+
+######### Other usage samples
+
+### Use the format in sink
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "id": "ruleCustomSink",
+  "sql": "SELECT * FROM demo",
+  "actions": [
+    {
+      "mqtt": {
+        "server": "tcp://syno.home:1883",
+        "topic": "result/customSink",
+        "format": "custom",
+        "schemaId": "myFormat.Sample",
+        "sendSingle": true
+      }
+    }
+  ]
+}
+
+
+
+##### Delimited format
+
+### Create a new delimited format stream
+### Use the format in source
+PUT http://{{host}}/streams/delimitedStream
+Content-Type: application/json
+
+{
+  "sql": "create stream delimitedStream () WITH (TYPE=\"mqtt\", DATASOURCE=\"demo/delimited\", FORMAT=\"delimited\", DELIMITER=\":\")"
+}
+
+### Use the format in source
+### Send data
+### 1:test:10
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "id": "ruleDelimitedSource",
+  "sql": "SELECT col1 as temperature FROM delimitedStream",
+  "actions": [
+    {
+      "mqtt": {
+        "server": "tcp://syno.home:1883",
+        "topic": "result/delimitedSource",
+        "format": "json",
+        "sendSingle": true
+      }
+    }
+  ]
+}
+
+### Use the format in sink
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "id": "ruleDelimitedSink",
+  "sql": "SELECT * FROM demo",
+  "actions": [
+    {
+      "mqtt": {
+        "server": "tcp://syno.home:1883",
+        "topic": "result/delimitedSink",
+        "format": "delimited",
+        "delimiter": " ",
+        "sendSingle": true
+      }
+    }
+  ]
+}
