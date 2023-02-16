@@ -1,0 +1,712 @@
+{
+  "drawflow": {
+    "Home": {
+      "data": {
+        "1": {
+          "id": 1,
+          "name": "mqtt",
+          "data": {
+            "id": "mqtt0142",
+            "name": "mqtt",
+            "label": "MQTT",
+            "type": "output",
+            "group": "source",
+            "properties": [
+              {
+                "connection_related": false,
+                "control": "text",
+                "default": "",
+                "exist": false,
+                "hint": {
+                  "zh": "",
+                  "en": ""
+                },
+                "label": {
+                  "en": "Data Source",
+                  "zh": "数据源"
+                },
+                "name": "datasource",
+                "optional": false,
+                "type": "string",
+                "values": null
+              },
+              {
+                "connection_related": false,
+                "control": "select",
+                "default": "",
+                "exist": false,
+                "hint": {
+                  "zh": "",
+                  "en": ""
+                },
+                "label": {
+                  "en": "Config Keys",
+                  "zh": "配置组"
+                },
+                "name": "confKey",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "connection_related": false,
+                "control": "select",
+                "default": "",
+                "exist": false,
+                "hint": {
+                  "zh": "",
+                  "en": ""
+                },
+                "label": {
+                  "en": "Steam Format",
+                  "zh": "流格式"
+                },
+                "name": "format",
+                "optional": false,
+                "type": "string",
+                "values": [
+                  "json",
+                  "binary",
+                  "protobuf"
+                ]
+              },
+              {
+                "connection_related": false,
+                "control": "radio",
+                "default": false,
+                "exist": false,
+                "hint": {
+                  "zh": "",
+                  "en": ""
+                },
+                "label": {
+                  "en": "Share",
+                  "zh": "共享"
+                },
+                "name": "shared",
+                "optional": true,
+                "type": "bool",
+                "values": null
+              },
+              {
+                "exist": false,
+                "name": "connectionSelector",
+                "default": "",
+                "type": "string",
+                "control": "select",
+                "connection_related": false,
+                "optional": true,
+                "values": [],
+                "hint": {
+                  "en": "specify the source to reuse the connection defined in connection configuration.",
+                  "zh": "此数据源复用 connection 中定义的连接"
+                },
+                "label": {
+                  "en": "Connection selector",
+                  "zh": "复用连接信息"
+                }
+              },
+              {
+                "exist": false,
+                "name": "server",
+                "default": "tcp://127.0.0.1:1883",
+                "type": "string",
+                "control": "text",
+                "connection_related": true,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "The server for MQTT message broker.",
+                  "zh": "MQTT 消息代理的服务器。"
+                },
+                "label": {
+                  "en": "Server Address",
+                  "zh": "服务器地址"
+                }
+              },
+              {
+                "exist": false,
+                "name": "username",
+                "default": "",
+                "type": "string",
+                "control": "text",
+                "connection_related": true,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "The username for MQTT connection.",
+                  "zh": "MQTT 连接用户名。"
+                },
+                "label": {
+                  "en": "Username",
+                  "zh": "用户名"
+                }
+              },
+              {
+                "exist": false,
+                "name": "password",
+                "default": "",
+                "type": "string",
+                "control": "text",
+                "connection_related": true,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "The password for MQTT connection.",
+                  "zh": "MQTT 连接密码。"
+                },
+                "label": {
+                  "en": "Password",
+                  "zh": "密码"
+                }
+              },
+              {
+                "exist": false,
+                "name": "protocolVersion",
+                "default": "3.1",
+                "type": "string",
+                "control": "text",
+                "connection_related": true,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "MQTT protocol version. 3.1 (also refer as MQTT 3) or 3.1.1 (also refer as MQTT 4). If not specified, the default value is 3.1.",
+                  "zh": "MQTT 协议版本。3.1 (也被称为 MQTT 3) 或者 3.1.1 (也被称为 MQTT 4)。 如果未指定，缺省值为 3.1。 "
+                },
+                "label": {
+                  "en": "protocolVersion",
+                  "zh": "MQTT 协议版本"
+                }
+              },
+              {
+                "exist": false,
+                "name": "clientid",
+                "default": "",
+                "type": "string",
+                "control": "text",
+                "connection_related": true,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "The client id for MQTT connection. If not specified, an uuid will be used.",
+                  "zh": "MQTT 连接的客户端 ID。 如果未指定，将使用一个 uuid。"
+                },
+                "label": {
+                  "en": "clientid",
+                  "zh": "客户端 ID"
+                }
+              },
+              {
+                "exist": false,
+                "name": "qos",
+                "default": 1,
+                "type": "int",
+                "control": "select",
+                "connection_related": false,
+                "optional": true,
+                "values": [
+                  0,
+                  1,
+                  2
+                ],
+                "hint": {
+                  "en": "The default subscription QoS level.",
+                  "zh": "默认订阅 QoS 级别"
+                },
+                "label": {
+                  "en": "Qos level",
+                  "zh": "QoS 级别"
+                }
+              },
+              {
+                "exist": false,
+                "name": "certificationPath",
+                "default": "",
+                "type": "string",
+                "control": "text",
+                "connection_related": true,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "The location of certification path. It can be an absolute path, or a relative path.",
+                  "zh": "证书路径。可以为绝对路径，也可以为相对路径。如果指定的是相对路径，那么父目录为执行 server 命令的路径。"
+                },
+                "label": {
+                  "en": "Certification path",
+                  "zh": "证书路径"
+                }
+              },
+              {
+                "exist": false,
+                "name": "privateKeyPath",
+                "default": "",
+                "type": "string",
+                "control": "text",
+                "connection_related": true,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "The location of private key path. It can be an absolute path, or a relative path. ",
+                  "zh": "私钥路径。可以为绝对路径，也可以为相对路径。"
+                },
+                "label": {
+                  "en": "Private key path",
+                  "zh": "私钥路径"
+                }
+              },
+              {
+                "exist": false,
+                "name": "rootCaPath",
+                "default": "",
+                "type": "string",
+                "control": "text",
+                "connection_related": true,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "The location of root ca path. It can be an absolute path, or a relative path. ",
+                  "zh": "根证书路径，用以验证服务器证书。可以为绝对路径，也可以为相对路径。"
+                },
+                "label": {
+                  "en": "Root CA path",
+                  "zh": "根证书路径"
+                }
+              },
+              {
+                "exist": false,
+                "name": "insecureSkipVerify",
+                "default": false,
+                "type": "bool",
+                "control": "radio",
+                "connection_related": true,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "Control if to skip the certification verification. If it is set to true, then skip certification verification; Otherwise, verify the certification.",
+                  "zh": "控制是否跳过证书认证。如果被设置为 true，那么跳过证书认证；否则进行证书验证。"
+                },
+                "label": {
+                  "en": "Skip Certification verification",
+                  "zh": "跳过证书验证"
+                }
+              },
+              {
+                "exist": false,
+                "name": "kubeedgeVersion",
+                "default": "",
+                "type": "string",
+                "control": "text",
+                "connection_related": false,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "Kubeedge version number. Different version numbers correspond to different file contents.",
+                  "zh": "Kubeedge 版本号，不同的版本号对应的文件内容不同"
+                },
+                "label": {
+                  "en": "Kubeedge version",
+                  "zh": "Kubeedge 版本号"
+                }
+              },
+              {
+                "exist": false,
+                "name": "kubeedgeModelFile",
+                "default": "",
+                "type": "string",
+                "control": "text",
+                "connection_related": false,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "The name of KubeEdge template file. The file is located in the specified etc/sources folder.",
+                  "zh": "KubeEdge 模版文件名，文件指定放在 etc/sources 文件夹中"
+                },
+                "label": {
+                  "en": "KubeEdge model file",
+                  "zh": "KubeEdge 模型文件"
+                }
+              }
+            ],
+            "schemaDesc": "eKuiper 为 MQTT 源流提供了内置支持，流可以订阅来自 MQTT 代理的消息并输入 eKuiper 处理管道。",
+            "trueType": "source",
+            "nodeType": "mqtt",
+            "inputs": [],
+            "outputs": [],
+            "record": {
+              "datasource": "flowDemo",
+              "confKey": "default",
+              "format": "json",
+              "shared": false,
+              "connectionSelector": "",
+              "server": "tcp://127.0.0.1:1883",
+              "username": "",
+              "password": "",
+              "protocolVersion": "3.1",
+              "clientid": "",
+              "qos": 1,
+              "certificationPath": "",
+              "privateKeyPath": "",
+              "rootCaPath": "",
+              "insecureSkipVerify": false,
+              "kubeedgeVersion": "",
+              "kubeedgeModelFile": "",
+              "schemaName": "",
+              "schemaMessage": "",
+              "delimiter": ""
+            }
+          },
+          "class": "BasicNode is-source",
+          "html": "BasicNode",
+          "typenode": "vue",
+          "inputs": {},
+          "outputs": {
+            "output_1": {
+              "connections": [
+                {
+                  "node": "6",
+                  "output": "input_1"
+                }
+              ]
+            }
+          },
+          "pos_x": 123,
+          "pos_y": 220
+        },
+        "6": {
+          "id": 6,
+          "name": "filter",
+          "data": {
+            "id": "filter6972",
+            "name": "filter",
+            "label": "过滤",
+            "type": "default",
+            "group": "operator",
+            "properties": [
+              {
+                "name": "expr",
+                "default": "12",
+                "optional": false,
+                "control": "text",
+                "type": "string",
+                "hint": {
+                  "en_US": "filter condition expression",
+                  "zh_CN": "过滤条件语句"
+                },
+                "label": {
+                  "en_US": "Condition",
+                  "zh_CN": "条件"
+                }
+              }
+            ],
+            "schemaDesc": "用于过滤数据流的操作",
+            "trueType": "operator",
+            "nodeType": "filter",
+            "inputs": [],
+            "outputs": [],
+            "record": {
+              "expr": "t4>440"
+            }
+          },
+          "class": "BasicNode is-operator",
+          "html": "BasicNode",
+          "typenode": "vue",
+          "inputs": {
+            "input_1": {
+              "connections": [
+                {
+                  "node": "1",
+                  "input": "output_1"
+                }
+              ]
+            }
+          },
+          "outputs": {
+            "output_1": {
+              "connections": [
+                {
+                  "node": "7",
+                  "output": "input_1"
+                }
+              ]
+            }
+          },
+          "pos_x": 430,
+          "pos_y": 215
+        },
+        "7": {
+          "id": 7,
+          "name": "mqtt",
+          "data": {
+            "id": "mqtt3736",
+            "name": "mqtt",
+            "label": "MQTT",
+            "type": "input",
+            "group": "sink",
+            "properties": [
+              {
+                "exist": false,
+                "name": "connectionSelector",
+                "default": "",
+                "type": "string",
+                "control": "select",
+                "connection_related": false,
+                "optional": true,
+                "values": [],
+                "hint": {
+                  "en": "specify the source to reuse the connection defined in connection configuration.",
+                  "zh": "复用 connection 中定义的连接"
+                },
+                "label": {
+                  "en": "Connection selector",
+                  "zh": "复用连接信息"
+                }
+              },
+              {
+                "exist": false,
+                "name": "server",
+                "default": "tcp://127.0.0.1:1883",
+                "type": "string",
+                "control": "text",
+                "connection_related": true,
+                "optional": false,
+                "values": null,
+                "hint": {
+                  "en": "The broker address of the MQTT server, such as tcp://127.0.0.1:1883.",
+                  "zh": "MQTT 服务器地址，例如 tcp://127.0.0.1:1883"
+                },
+                "label": {
+                  "en": "MQTT broker address",
+                  "zh": "MQTT 服务器地址"
+                }
+              },
+              {
+                "exist": false,
+                "name": "topic",
+                "default": "",
+                "type": "string",
+                "control": "text",
+                "connection_related": false,
+                "optional": false,
+                "values": null,
+                "hint": {
+                  "en": "The MQTT topic, such as analysis/result",
+                  "zh": "MQTT 主题，例如 analysis/result"
+                },
+                "label": {
+                  "en": "MQTT topic",
+                  "zh": "MQTT 主题"
+                }
+              },
+              {
+                "exist": false,
+                "name": "clientId",
+                "default": "",
+                "type": "string",
+                "control": "text",
+                "connection_related": true,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "The client id for MQTT connection. If not specified, an uuid will be used",
+                  "zh": "MQTT 连接的客户端 ID。 如果未指定，将使用一个 uuid"
+                },
+                "label": {
+                  "en": "MQTT ClientID",
+                  "zh": "MQTT 客户端标识符(ClinetID)"
+                }
+              },
+              {
+                "exist": false,
+                "name": "protocolVersion",
+                "default": "3.1",
+                "type": "string",
+                "control": "select",
+                "connection_related": true,
+                "optional": true,
+                "values": [
+                  "3.1",
+                  "3.1.1"
+                ],
+                "hint": {
+                  "en": "MQTT protocol version. 3.1 (also refer as MQTT 3) or 3.1.1 (also refer as MQTT 4).  If not specified, the default value is 3.1.",
+                  "zh": "MQTT 协议版本。3.1 (也被称为 MQTT 3) 或者 3.1.1 (也被称为 MQTT 4)。 如果未指定，缺省值为 3.1。"
+                },
+                "label": {
+                  "en": "MQTT protocol version",
+                  "zh": "MQTT 协议版本"
+                }
+              },
+              {
+                "exist": false,
+                "name": "qos",
+                "default": 0,
+                "type": "list_int",
+                "control": "select",
+                "connection_related": false,
+                "optional": true,
+                "values": [
+                  0,
+                  1,
+                  2
+                ],
+                "hint": {
+                  "en": "The QoS for message delivery.",
+                  "zh": "消息转发的服务质量"
+                },
+                "label": {
+                  "en": "QoS",
+                  "zh": "QoS"
+                }
+              },
+              {
+                "exist": false,
+                "name": "username",
+                "default": "",
+                "type": "string",
+                "control": "text",
+                "connection_related": true,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "The username for the connection.",
+                  "zh": "连接用户名"
+                },
+                "label": {
+                  "en": "Username",
+                  "zh": "用户名"
+                }
+              },
+              {
+                "exist": false,
+                "name": "password",
+                "default": "",
+                "type": "string",
+                "control": "text",
+                "connection_related": true,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "The password for the connection.",
+                  "zh": "连接密码。"
+                },
+                "label": {
+                  "en": "Password",
+                  "zh": "密码"
+                }
+              },
+              {
+                "exist": false,
+                "name": "certificationPath",
+                "default": "",
+                "type": "string",
+                "control": "text",
+                "connection_related": true,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "The certification path. It can be an absolute path, or a relative path. If it is an relative path, then the base path is where you excuting the kuiperd command. For example, if you run bin/kuiperd from /var/kuiper, then the base path is /var/kuiper; If you run ./kuiperd from /var/kuiper/bin, then the base path is /var/kuiper/bin.",
+                  "zh": "证书路径。可以为绝对路径，也可以为相对路径。如果指定的是相对路径，那么父目录为执行 kuiperd 命令的路径。比如，如果你在 /var/kuiper 中运行 bin/kuiperd ，那么父目录为 /var/kuiper; 如果运行从 /var/kuiper/bin 中运行./kuiperd，那么父目录为 /var/kuiper/bin"
+                },
+                "label": {
+                  "en": "Certification path",
+                  "zh": "证书路径"
+                }
+              },
+              {
+                "exist": false,
+                "name": "privateKeyPath",
+                "default": "",
+                "type": "string",
+                "control": "text",
+                "connection_related": true,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "The private key path. It can be either absolute path, or relative path, which is similar to use of certificationPath.",
+                  "zh": "私钥路径。可以为绝对路径，也可以为相对路径，相对路径的用法与 certificationPath 类似"
+                },
+                "label": {
+                  "en": "Private key path",
+                  "zh": "私钥路径"
+                }
+              },
+              {
+                "exist": false,
+                "name": "rootCaPath",
+                "default": "",
+                "type": "string",
+                "control": "text",
+                "connection_related": true,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "The location of root ca path. It can be an absolute path, or a relative path. ",
+                  "zh": "根证书路径，用以验证服务器证书。可以为绝对路径，也可以为相对路径。"
+                },
+                "label": {
+                  "en": "Root Ca path",
+                  "zh": "根证书路径"
+                }
+              },
+              {
+                "exist": false,
+                "name": "insecureSkipVerify",
+                "default": false,
+                "type": "bool",
+                "control": "radio",
+                "connection_related": true,
+                "optional": true,
+                "values": null,
+                "hint": {
+                  "en": "If InsecureSkipVerify is true, TLS accepts any certificate presented by the server and any host name in that certificate.  In this mode, TLS is susceptible to man-in-the-middle attacks. The default value is false. The configuration item can only be used with TLS connections.",
+                  "zh": "如果 InsecureSkipVerify 设置为 true, TLS接受服务器提供的任何证书以及该证书中的任何主机名。 在这种模式下，TLS容易受到中间人攻击。默认值为false。配置项只能用于TLS连接。"
+                },
+                "label": {
+                  "en": "Skip Certification verification",
+                  "zh": "跳过证书验证"
+                }
+              }
+            ],
+            "schemaDesc": "该操作用于将输出消息发布到 MQTT 服务器中",
+            "trueType": "sink",
+            "nodeType": "mqtt",
+            "inputs": [],
+            "outputs": [],
+            "record": {
+              "resourceId": "nano",
+              "bufferLength": 1024,
+              "enableCache": false,
+              "format": "json",
+              "insecureSkipVerify": false,
+              "omitIfEmpty": false,
+              "password": "public",
+              "protocolVersion": "3.1.1",
+              "qos": 0,
+              "runAsync": false,
+              "sendSingle": true,
+              "server": "tcp://nanomq:1883",
+              "topic": "result/proto1",
+              "username": "admin",
+              "connectionSelector": ""
+            }
+          },
+          "class": "BasicNode is-sink",
+          "html": "BasicNode",
+          "typenode": "vue",
+          "inputs": {
+            "input_1": {
+              "connections": [
+                {
+                  "node": "6",
+                  "input": "output_1"
+                }
+              ]
+            }
+          },
+          "outputs": {},
+          "pos_x": 757,
+          "pos_y": 224
+        }
+      }
+    }
+  }
+}

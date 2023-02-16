@@ -1,0 +1,692 @@
+{
+  "drawflow": {
+    "Home": {
+      "data": {
+        "1": {
+          "class": "BasicNode is-source",
+          "data": {
+            "group": "source",
+            "id": "file6140",
+            "inputs": [],
+            "label": "File",
+            "name": "file",
+            "nodeType": "file",
+            "outputs": [],
+            "properties": [
+              {
+                "connection_related": false,
+                "control": "select",
+                "default": "json",
+                "exist": false,
+                "hint": {
+                  "en": "The file format type.",
+                  "zh": "文件格式类型"
+                },
+                "label": {
+                  "en": "File type",
+                  "zh": "文件类型"
+                },
+                "name": "fileType",
+                "optional": true,
+                "type": "string",
+                "values": [
+                  "json",
+                  "csv",
+                  "lines"
+                ]
+              },
+              {
+                "connection_related": false,
+                "control": "text",
+                "default": "",
+                "exist": false,
+                "hint": {
+                  "en": "The directory of the file relative to eKuiper root or an absolute path. Do not include the file name here. The file name should be defined in the stream data source.",
+                  "zh": "文件所在文件夹的路径。请勿包含文件名，文件名应该在数据源中定义。"
+                },
+                "label": {
+                  "en": "Path",
+                  "zh": "文件夹路径"
+                },
+                "name": "path",
+                "optional": false,
+                "type": "string",
+                "values": null
+              },
+              {
+                "connection_related": false,
+                "control": "text",
+                "default": 0,
+                "exist": false,
+                "hint": {
+                  "en": "The interval between reading the files, time unit is ms. If only read once, set it to 0",
+                  "zh": "读取文件的间隔时间，单位为毫秒。如果只需读取一次，设置为0。"
+                },
+                "label": {
+                  "en": "Interval",
+                  "zh": "间隔时间"
+                },
+                "name": "interval",
+                "optional": true,
+                "type": "int",
+                "values": null
+              },
+              {
+                "connection_related": false,
+                "control": "text",
+                "default": 0,
+                "exist": false,
+                "hint": {
+                  "en": "The sending interval between each event in millisecond.",
+                  "zh": "事件发送的间隔时间，单位为毫秒。"
+                },
+                "label": {
+                  "en": "Send Interval",
+                  "zh": "发送间隔"
+                },
+                "name": "sendInterval",
+                "optional": true,
+                "type": "int",
+                "values": null
+              },
+              {
+                "connection_related": false,
+                "control": "select",
+                "default": 0,
+                "exist": false,
+                "hint": {
+                  "en": "The action after read. 0 meas keep the file; 1 means delete the file; 2 means move the file to the path defined in the property 'moveTo'",
+                  "zh": "读取后的操作。0表示保留文件；1表示删除文件；2表示将文件移动到属性 'moveTo' 中定义的路径。"
+                },
+                "label": {
+                  "en": "Action after read",
+                  "zh": "读取后动作"
+                },
+                "name": "actionAfterRead",
+                "optional": true,
+                "type": "int",
+                "values": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "connection_related": false,
+                "control": "text",
+                "default": "",
+                "exist": false,
+                "hint": {
+                  "en": "The path to move the file to after read, only valid when the actionAfterRead is 1.",
+                  "zh": "移动文件的位置, 仅用于 actionAfterRead 为 2 的情况"
+                },
+                "label": {
+                  "en": "Move to path",
+                  "zh": "移动位置"
+                },
+                "name": "moveTo",
+                "optional": true,
+                "type": "string",
+                "values": null
+              },
+              {
+                "connection_related": false,
+                "control": "radio",
+                "default": false,
+                "exist": false,
+                "hint": {
+                  "en": "If the first line is header, usually used for csv file.",
+                  "zh": "是否包含文件头，多用于 csv。若为 true，则第一行解析为文件头。"
+                },
+                "label": {
+                  "en": "Has header",
+                  "zh": "是否包含文件头"
+                },
+                "name": "hasHeader",
+                "optional": true,
+                "type": "bool",
+                "values": null
+              },
+              {
+                "connection_related": false,
+                "control": "list",
+                "default": null,
+                "exist": false,
+                "hint": {
+                  "en": "Define the columns. If header is defined, this will be override.",
+                  "zh": "定义文件的列。如果定义了文件头，该选项将被覆盖。"
+                },
+                "label": {
+                  "en": "Columns",
+                  "zh": "字段列表"
+                },
+                "name": "columns",
+                "optional": true,
+                "type": "list_string",
+                "values": null
+              },
+              {
+                "connection_related": false,
+                "control": "text",
+                "default": 0,
+                "exist": false,
+                "hint": {
+                  "en": "How many lines to be ignored at the beginning. Notice that, empty line will be ignored and not be calculated.",
+                  "zh": "忽略开头多少行的内容。"
+                },
+                "label": {
+                  "en": "Ignore start lines",
+                  "zh": "文件开头忽略的行数"
+                },
+                "name": "ignoreStartLines",
+                "optional": true,
+                "type": "int",
+                "values": null
+              },
+              {
+                "connection_related": false,
+                "control": "text",
+                "default": 0,
+                "exist": false,
+                "hint": {
+                  "en": "How many lines to be ignored in the end. Notice that, empty line will be ignored and not be calculated.",
+                  "zh": "忽略结尾多少行的内容。最后的空行不计算在内。。"
+                },
+                "label": {
+                  "en": "Ignore end lines",
+                  "zh": "文件结尾忽略的行数"
+                },
+                "name": "ignoreEndLines",
+                "optional": true,
+                "type": "int",
+                "values": null
+              }
+            ],
+            "record": {
+              "confKey": "default",
+              "datasource": "data.lines",
+              "format": "json",
+              "shared": true
+            },
+            "schemaDesc": "Monitor file system and load the content into the eKuiper processing pipeline.",
+            "trueType": "source",
+            "type": "output"
+          },
+          "html": "BasicNode",
+          "id": 1,
+          "inputs": {},
+          "name": "file",
+          "outputs": {
+            "output_1": {
+              "connections": [
+                {
+                  "node": "3",
+                  "output": "input_1"
+                }
+              ]
+            }
+          },
+          "pos_x": 52,
+          "pos_y": 311,
+          "typenode": "vue"
+        },
+        "3": {
+          "class": "BasicNode is-operator",
+          "data": {
+            "group": "operator",
+            "id": "switch4664",
+            "inputs": [],
+            "label": "Switch",
+            "name": "switch",
+            "nodeType": "switch",
+            "outputs": [],
+            "properties": [
+              {
+                "control": "list",
+                "hint": {
+                  "en_US": "case condition expression",
+                  "zh_CN": "分流条件语句"
+                },
+                "label": {
+                  "en_US": "Cases",
+                  "zh_CN": "条件"
+                },
+                "name": "cases",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "control": "checkbox",
+                "default": false,
+                "hint": {
+                  "en_US": "Stop at first match",
+                  "zh_CN": "接受第一条匹配信息后停止"
+                },
+                "label": {
+                  "en_US": "Stop at first match",
+                  "zh_CN": "接受第一条匹配信息后停止"
+                },
+                "name": "stopAtFirstMatch",
+                "optional": false,
+                "type": "boolean"
+              }
+            ],
+            "record": {
+              "cases": [
+                "temperature > 25",
+                "temperature <= 25"
+              ],
+              "stopAtFirstMatch": true
+            },
+            "schemaDesc": "An operation to route events to different branches based on a case condition similar to switch statement in programming languages.",
+            "trueType": "operator",
+            "type": "default"
+          },
+          "html": "BasicNode",
+          "id": 3,
+          "inputs": {
+            "input_1": {
+              "connections": [
+                {
+                  "input": "output_1",
+                  "node": "1"
+                }
+              ]
+            }
+          },
+          "name": "switch",
+          "outputs": {
+            "output_1": {
+              "connections": [
+                {
+                  "node": "6",
+                  "output": "input_1"
+                }
+              ]
+            },
+            "output_2": {
+              "connections": [
+                {
+                  "node": "4",
+                  "output": "input_1"
+                }
+              ]
+            }
+          },
+          "pos_x": 317,
+          "pos_y": 300,
+          "typenode": "vue"
+        },
+        "4": {
+          "class": "BasicNode is-sink",
+          "data": {
+            "group": "sink",
+            "id": "log3037",
+            "inputs": [],
+            "label": "Log",
+            "name": "log",
+            "nodeType": "log",
+            "outputs": [],
+            "properties": [],
+            "schemaDesc": "",
+            "trueType": "sink",
+            "type": "input"
+          },
+          "html": "BasicNode",
+          "id": 4,
+          "inputs": {
+            "input_1": {
+              "connections": [
+                {
+                  "input": "output_2",
+                  "node": "3"
+                }
+              ]
+            }
+          },
+          "name": "log",
+          "outputs": {},
+          "pos_x": 680,
+          "pos_y": 451,
+          "typenode": "vue"
+        },
+        "5": {
+          "class": "BasicNode is-sink",
+          "data": {
+            "group": "sink",
+            "id": "mqtt5055",
+            "inputs": [],
+            "label": "MQTT",
+            "name": "mqtt",
+            "nodeType": "mqtt",
+            "outputs": [],
+            "properties": [
+              {
+                "connection_related": false,
+                "control": "select",
+                "default": "",
+                "exist": false,
+                "hint": {
+                  "en": "specify the source to reuse the connection defined in connection configuration.",
+                  "zh": "复用 connection 中定义的连接"
+                },
+                "label": {
+                  "en": "Connection selector",
+                  "zh": "复用连接信息"
+                },
+                "name": "connectionSelector",
+                "optional": true,
+                "type": "string",
+                "values": []
+              },
+              {
+                "connection_related": true,
+                "control": "text",
+                "default": "tcp://127.0.0.1:1883",
+                "exist": false,
+                "hint": {
+                  "en": "The broker address of the MQTT server, such as tcp://127.0.0.1:1883.",
+                  "zh": "MQTT 服务器地址，例如 tcp://127.0.0.1:1883"
+                },
+                "label": {
+                  "en": "MQTT broker address",
+                  "zh": "MQTT 服务器地址"
+                },
+                "name": "server",
+                "optional": false,
+                "type": "string",
+                "values": null
+              },
+              {
+                "connection_related": false,
+                "control": "text",
+                "default": "",
+                "exist": false,
+                "hint": {
+                  "en": "The MQTT topic, such as analysis/result",
+                  "zh": "MQTT 主题，例如 analysis/result"
+                },
+                "label": {
+                  "en": "MQTT topic",
+                  "zh": "MQTT 主题"
+                },
+                "name": "topic",
+                "optional": false,
+                "type": "string",
+                "values": null
+              },
+              {
+                "connection_related": true,
+                "control": "text",
+                "default": "",
+                "exist": false,
+                "hint": {
+                  "en": "The client id for MQTT connection. If not specified, an uuid will be used",
+                  "zh": "MQTT 连接的客户端 ID。 如果未指定，将使用一个 uuid"
+                },
+                "label": {
+                  "en": "MQTT ClientID",
+                  "zh": "MQTT 客户端标识符(ClinetID)"
+                },
+                "name": "clientId",
+                "optional": true,
+                "type": "string",
+                "values": null
+              },
+              {
+                "connection_related": true,
+                "control": "select",
+                "default": "3.1.1",
+                "exist": false,
+                "hint": {
+                  "en": "MQTT protocol version. 3.1 (also refer as MQTT 3) or 3.1.1 (also refer as MQTT 4).  If not specified, the default value is 3.1.",
+                  "zh": "MQTT 协议版本。3.1 (也被称为 MQTT 3) 或者 3.1.1 (也被称为 MQTT 4)。 如果未指定，缺省值为 3.1。"
+                },
+                "label": {
+                  "en": "MQTT protocol version",
+                  "zh": "MQTT 协议版本"
+                },
+                "name": "protocolVersion",
+                "optional": true,
+                "type": "string",
+                "values": [
+                  "3.1",
+                  "3.1.1"
+                ]
+              },
+              {
+                "connection_related": false,
+                "control": "select",
+                "default": 0,
+                "exist": false,
+                "hint": {
+                  "en": "The QoS for message delivery.",
+                  "zh": "消息转发的服务质量"
+                },
+                "label": {
+                  "en": "QoS",
+                  "zh": "QoS"
+                },
+                "name": "qos",
+                "optional": true,
+                "type": "list_int",
+                "values": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "connection_related": true,
+                "control": "text",
+                "default": "",
+                "exist": false,
+                "hint": {
+                  "en": "The username for the connection.",
+                  "zh": "连接用户名"
+                },
+                "label": {
+                  "en": "Username",
+                  "zh": "用户名"
+                },
+                "name": "username",
+                "optional": true,
+                "type": "string",
+                "values": null
+              },
+              {
+                "connection_related": true,
+                "control": "text",
+                "default": "",
+                "exist": false,
+                "hint": {
+                  "en": "The password for the connection.",
+                  "zh": "连接密码。"
+                },
+                "label": {
+                  "en": "Password",
+                  "zh": "密码"
+                },
+                "name": "password",
+                "optional": true,
+                "type": "string",
+                "values": null
+              },
+              {
+                "connection_related": true,
+                "control": "text",
+                "default": "",
+                "exist": false,
+                "hint": {
+                  "en": "The certification path. It can be an absolute path, or a relative path. If it is an relative path, then the base path is where you excuting the kuiperd command. For example, if you run bin/kuiperd from /var/kuiper, then the base path is /var/kuiper; If you run ./kuiperd from /var/kuiper/bin, then the base path is /var/kuiper/bin.",
+                  "zh": "证书路径。可以为绝对路径，也可以为相对路径。如果指定的是相对路径，那么父目录为执行 kuiperd 命令的路径。比如，如果你在 /var/kuiper 中运行 bin/kuiperd ，那么父目录为 /var/kuiper; 如果运行从 /var/kuiper/bin 中运行./kuiperd，那么父目录为 /var/kuiper/bin"
+                },
+                "label": {
+                  "en": "Certification path",
+                  "zh": "证书路径"
+                },
+                "name": "certificationPath",
+                "optional": true,
+                "type": "string",
+                "values": null
+              },
+              {
+                "connection_related": true,
+                "control": "text",
+                "default": "",
+                "exist": false,
+                "hint": {
+                  "en": "The private key path. It can be either absolute path, or relative path, which is similar to use of certificationPath.",
+                  "zh": "私钥路径。可以为绝对路径，也可以为相对路径，相对路径的用法与 certificationPath 类似"
+                },
+                "label": {
+                  "en": "Private key path",
+                  "zh": "私钥路径"
+                },
+                "name": "privateKeyPath",
+                "optional": true,
+                "type": "string",
+                "values": null
+              },
+              {
+                "connection_related": true,
+                "control": "text",
+                "default": "",
+                "exist": false,
+                "hint": {
+                  "en": "The location of root ca path. It can be an absolute path, or a relative path. ",
+                  "zh": "根证书路径，用以验证服务器证书。可以为绝对路径，也可以为相对路径。"
+                },
+                "label": {
+                  "en": "Root Ca path",
+                  "zh": "根证书路径"
+                },
+                "name": "rootCaPath",
+                "optional": true,
+                "type": "string",
+                "values": null
+              },
+              {
+                "connection_related": true,
+                "control": "radio",
+                "default": false,
+                "exist": false,
+                "hint": {
+                  "en": "If InsecureSkipVerify is true, TLS accepts any certificate presented by the server and any host name in that certificate.  In this mode, TLS is susceptible to man-in-the-middle attacks. The default value is false. The configuration item can only be used with TLS connections.",
+                  "zh": "如果 InsecureSkipVerify 设置为 true, TLS接受服务器提供的任何证书以及该证书中的任何主机名。 在这种模式下，TLS容易受到中间人攻击。默认值为false。配置项只能用于TLS连接。"
+                },
+                "label": {
+                  "en": "Skip Certification verification",
+                  "zh": "跳过证书验证"
+                },
+                "name": "insecureSkipVerify",
+                "optional": true,
+                "type": "bool",
+                "values": null
+              }
+            ],
+            "record": {
+              "bufferLength": 1024,
+              "connectionSelector": "",
+              "enableCache": false,
+              "format": "json",
+              "insecureSkipVerify": false,
+              "omitIfEmpty": false,
+              "protocolVersion": "3.1.1",
+              "qos": 0,
+              "resourceId": "nano",
+              "runAsync": false,
+              "sendSingle": true,
+              "server": "tcp://nanomq:1883",
+              "topic": "result/alarm"
+            },
+            "schemaDesc": "The action is used for publish output message into an MQTT server.",
+            "trueType": "sink",
+            "type": "input"
+          },
+          "html": "BasicNode",
+          "id": 5,
+          "inputs": {
+            "input_1": {
+              "connections": [
+                {
+                  "input": "output_1",
+                  "node": "6"
+                }
+              ]
+            }
+          },
+          "name": "mqtt",
+          "outputs": {},
+          "pos_x": 808,
+          "pos_y": 173,
+          "typenode": "vue"
+        },
+        "6": {
+          "class": "BasicNode is-operator",
+          "data": {
+            "group": "operator",
+            "id": "pick2501",
+            "inputs": [],
+            "label": "Pick",
+            "name": "pick",
+            "nodeType": "pick",
+            "outputs": [],
+            "properties": [
+              {
+                "control": "list",
+                "default": "",
+                "hint": {
+                  "en_US": "select fields",
+                  "zh_CN": "选取字段"
+                },
+                "label": {
+                  "en_US": "Fields",
+                  "zh_CN": "字段"
+                },
+                "name": "fields",
+                "optional": false,
+                "type": "list_string"
+              }
+            ],
+            "record": {
+              "fields": [
+                "ts",
+                "temperature"
+              ]
+            },
+            "schemaDesc": "An operation to pick the selected fields.",
+            "trueType": "operator",
+            "type": "default"
+          },
+          "html": "BasicNode",
+          "id": 6,
+          "inputs": {
+            "input_1": {
+              "connections": [
+                {
+                  "input": "output_1",
+                  "node": "3"
+                }
+              ]
+            }
+          },
+          "name": "pick",
+          "outputs": {
+            "output_1": {
+              "connections": [
+                {
+                  "node": "5",
+                  "output": "input_1"
+                }
+              ]
+            }
+          },
+          "pos_x": 563,
+          "pos_y": 171,
+          "typenode": "vue"
+        }
+      }
+    }
+  }
+}
