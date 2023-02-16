@@ -1,0 +1,57 @@
+
+### 1 create stream
+POST http://{{host}}/streams
+Content-Type: application/json
+
+{
+  "sql": "create stream TfliteImage () WITH (DATASOURCE=\"demo1TfliteImage\", FORMAT=\"binary\", TYPE=\"mqtt\")"
+}
+
+### update stream
+PUT http://{{host}}/streams/TfliteImage
+Content-Type: application/json
+
+{
+  "sql": "create stream TfliteImage () WITH (DATASOURCE=\"demo1TfliteImage\", FORMAT=\"binary\", TYPE=\"mqtt\")"
+}
+
+### 2 install tfLite plugin and image plugin
+### 3 upload image model
+
+
+
+### 4 create rule
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "id": "ruleTfLiteImage",
+  "sql": "SELECT tfLite(\"mobilenet_quant_v1_224\", resize(self, 224, 224, true)) FROM TfliteImage",
+  "actions": [
+    {
+      "mqtt": {
+        "server": "tcp://emqx:1883",
+        "topic": "demo1TfliteImage_result",
+        "sendSingle": true
+      }
+    }
+  ]
+}
+
+### 4 update rule
+PUT http://{{host}}/rules/ruleTfLiteImage
+Content-Type: application/json
+
+{
+  "id": "ruleTfLiteImage",
+  "sql": "SELECT tfLite(\"mobilenet_quant_v1_224\", resize(self, 224, 224, true)) FROM TfliteImage",
+  "actions": [
+    {
+      "mqtt": {
+        "server": "tcp://emqx:1883",
+        "topic": "demo1TfliteImage_result",
+        "sendSingle": true
+      }
+    }
+  ]
+}

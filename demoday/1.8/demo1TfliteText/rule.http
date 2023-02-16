@@ -1,0 +1,63 @@
+
+### 1 create stream
+POST http://{{host}}/streams
+Content-Type: application/json
+
+{
+  "sql": "create stream TfliteText (data BYTEA) WITH (DATASOURCE=\"demo1TfliteText\", FORMAT=\"json\", TYPE=\"mqtt\")"
+}
+
+### update stream
+PUT http://{{host}}/streams/TfliteText
+Content-Type: application/json
+
+{
+  "sql": "create stream TfliteText (data BYTEA) WITH (DATASOURCE=\"demo1TfliteText\", FORMAT=\"json\", TYPE=\"mqtt\")"
+}
+
+### 2 install tfLite plugin and image plugin
+### 3 upload image model
+
+
+
+### 4 create rule
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "id": "ruleTfliteText",
+  "sql": "SELECT tfLite(\"text_classification\", data) from TfliteText",
+  "actions": [
+    {
+      "mqtt": {
+        "server": "tcp://emqx:1883",
+        "topic": "demo1TfliteText_result",
+        "sendSingle": true
+      }
+    }
+  ]
+}
+
+### 4 update rule
+PUT http://{{host}}/rules/ruleDecode
+Content-Type: application/json
+
+{
+  "id": "ruleDecode",
+  "sql": "SELECT tfLite(\"text_classification\", data) from TfliteText",
+  "actions": [
+    {
+      "mqtt": {
+        "server": "tcp://emqx:1883",
+        "topic": "demo1TfliteText_result",
+        "sendSingle": true
+      }
+    }
+  ]
+}
+
+### 5 test
+
+This is the best movie I’ve seen in recent
+
+What a waste of my time.

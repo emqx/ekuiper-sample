@@ -1,0 +1,107 @@
+
+### 1 create stream
+POST http://{{host}}/streams
+Content-Type: application/json
+
+{
+  "sql": "create stream demo2 () WITH (DATASOURCE=\"demo2\", FORMAT=\"json\", TYPE=\"mqtt\")"
+}
+
+### 1 create stream
+PUT http://{{host}}/streams/demo2
+Content-Type: application/json
+
+{
+  "sql": "create stream demo2 () WITH (DATASOURCE=\"demo2\", FORMAT=\"json\", TYPE=\"mqtt\")"
+}
+
+### 2 install tfLite plugin and image plugin
+### 3 upload image model
+
+
+
+### 4 create rule
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "id": "ruleWhen",
+  "sql": "SELECT lag(StatusDesc) as status, Ts - lag(Ts) OVER (WHEN had_changed(true, StatusCode)), EquipCode FROM demo2 WHERE had_changed(true, StatusCode)",
+  "actions": [
+    {
+      "mqtt": {
+        "server": "tcp://emqx:1883",
+        "topic": "demo1When_result",
+        "sendSingle": true
+      }
+    }
+  ]
+}
+
+### 4 create rule
+PUT http://{{host}}/rules/ruleWhen
+Content-Type: application/json
+
+{
+  "id": "ruleWhen",
+  "sql": "SELECT lag(StatusDesc) as status, Ts - lag(Ts) OVER (WHEN had_changed(true, StatusCode)), EquipCode FROM demo2 WHERE had_changed(true, StatusCode)",
+  "actions": [
+    {
+      "mqtt": {
+        "server": "tcp://emqx:1883",
+        "topic": "demo1When_result",
+        "sendSingle": true
+      }
+    }
+  ]
+}
+
+### 4 stop rule
+POST http://{{host}}/rules/ruleWhen/stop
+Content-Type: application/json
+
+
+### 4 start rule
+POST http://{{host}}/rules/ruleWhen/start
+Content-Type: application/json
+
+
+### Test Data
+#{
+# "EquipCode": "BXF001",
+# "StatusDesc": "poweroff",
+# "StatusCode": 0,
+# "Ts": 1
+#}
+#
+#{
+# "EquipCode": "BXF001
+# "StatusDesc": poweroff,
+# "StatusCode": 0
+# "Ts": 2,
+#}
+
+
+### 4 create rule
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "id": "ruleStatis",
+  "sql": "select stddev(a) from demo2 group by countwindow(5)",
+  "actions": [
+    {
+      "mqtt": {
+        "server": "tcp://emqx:1883",
+        "topic": "demo2Analysis_result",
+        "sendSingle": true
+      }
+    }
+  ]
+}
+
+### Data
+
+{
+  "a": 100
+}
