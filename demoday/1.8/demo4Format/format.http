@@ -2,7 +2,7 @@
 # Must write and build the protobuf file. Given a proto file
 # a. protoc --go_opt=Mhelloworld.proto=com.main --go_out=. helloworld.proto
 # b. Create the wrapper file, check /internal/converter/protobuf/test
-# c. Build it to get the so file, check doc or serialization.
+# c. Build it to get the so file, check doc https://ekuiper.org/docs/en/latest/guide/serialization/serialization.html#build-format-plugin-with-docker.
 
 ### 1.1 Register the schema
 POST http://{{host}}/schemas/protobuf
@@ -11,7 +11,7 @@ Content-Type: application/json
 {
   "name": "helloworld",
   "file": "file:///kuiper/data/uploads/helloworld.proto",
-  "soFile": "file:///kuiper/data/uploads/helloworld.so"
+  "soFile": "file:///kuiper/data/uploads/helloworld_slim.so"
 }
 
 ### 1.2 Use the format in source
@@ -34,7 +34,7 @@ Content-Type: application/json
   "actions": [
     {
       "mqtt": {
-        "server": "tcp://syno.home:1883",
+        "server": "tcp://nanomq:1883",
         "topic": "result/format/pb/decode",
         "sendSingle": true
       }
@@ -84,7 +84,7 @@ Content-Type: application/json
   "actions": [
     {
       "mqtt": {
-        "server": "tcp://syno.home:1883",
+        "server": "tcp://nanomq:1883",
         "topic": "result/customSource",
         "format": "json",
         "sendSingle": true
@@ -144,7 +144,7 @@ Content-Type: application/json
 
 ### Create a new delimited format stream
 ### Use the format in source
-PUT http://{{host}}/streams/delimitedStream
+POST http://{{host}}/streams
 Content-Type: application/json
 
 {
@@ -159,11 +159,11 @@ Content-Type: application/json
 
 {
   "id": "ruleDelimitedSource",
-  "sql": "SELECT col1 as temperature FROM delimitedStream",
+  "sql": "SELECT col0 as id, col1 as device, col2 as temperature FROM delimitedStream",
   "actions": [
     {
       "mqtt": {
-        "server": "tcp://syno.home:1883",
+        "server": "tcp://nanomq:1883",
         "topic": "result/delimitedSource",
         "format": "json",
         "sendSingle": true
@@ -182,7 +182,7 @@ Content-Type: application/json
   "actions": [
     {
       "mqtt": {
-        "server": "tcp://syno.home:1883",
+        "server": "tcp://nanomq:1883",
         "topic": "result/delimitedSink",
         "format": "delimited",
         "delimiter": " ",
