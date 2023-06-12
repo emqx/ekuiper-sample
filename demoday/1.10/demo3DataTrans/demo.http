@@ -1,0 +1,168 @@
+#######
+#
+# This demo demonstrates how to manipulate array data and how to convert it into multiple rows.
+#
+#######
+
+######## DEMO 1:  array data ########
+
+### 1. Create the stream
+POST http://{{host}}/streams
+Content-Type: application/json
+
+{
+  "sql": "create stream demo () WITH (FORMAT=\"JSON\", DATASOURCE=\"device/gr/messages\")"
+}
+
+
+### 2. Create the rule to expand an array into multiple rows
+
+### 2.1 item is map[string]interface object
+
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "sql": "SELECT unnest(data), devices from demo;",
+  "actions": [{
+    "mqtt":  {
+      "server": "tcp://broker.emqx.io:1883",
+      "topic": "device/gr/results"
+    }
+  }]
+}
+
+
+### 2.2 item is string object
+
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "sql": "SELECT data, unnest(devices) from demo;",
+  "actions": [{
+    "mqtt":  {
+      "server": "tcp://broker.emqx.io:1883",
+      "topic": "device/gr/results"
+    }
+  }]
+}
+
+
+### 2.3 wrong example: the unnest function can only be used with one multiple row function in the SELECT clause at a time.
+
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "sql": "SELECT unnest(data), unnest(devices) from demo;",
+  "actions": [{
+    "mqtt":  {
+      "server": "tcp://broker.emqx.io:1883",
+      "topic": "device/gr/results"
+    }
+  }]
+}
+
+
+### 3. Test data
+
+#{
+#  "data":
+#      [{
+#        "id": "device1",
+#        "temperature": 20,
+#        "humidity": 30,
+#        "time": "2020-06-13 12:00:00",
+#        "location": "beijing",
+#        "status": "normal"
+#      },
+#      {
+#        "id": "device2",
+#        "temperature": 22,
+#        "humidity": 32,
+#        "time": "2020-06-13 12:00:00",
+#        "location": "beijing",
+#        "status": "stop"
+#      },
+#      {
+#        "id": "device3",
+#        "temperature": 23,
+#        "humidity": 33,
+#        "time": "2020-06-13 12:00:00",
+#        "location": "beijing",
+#        "status": "normal"
+#      }],
+#  "correlationId": "1234567890",
+#  "timestamp": "2020-06-13 12:00:00",
+#  "devices": ["device1", "device2", "device3"]
+#}
+
+
+#######
+#
+# This demo demonstrates how to work with nested data and how to extract specific fields from complex data structures.
+#
+#######
+
+######## DEMO 2:  nested data ########
+
+### 1. Create the stream
+POST http://{{host}}/streams
+Content-Type: application/json
+
+{
+  "sql": "create stream demo () WITH (FORMAT=\"JSON\", DATASOURCE=\"device/gr/messages\")"
+}
+
+
+### 2. Create the rule to work with nested data
+
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "sql": "SELECT device.data.temperature as temperature, device.data->humidity as humidity, device->data->time as time from demo;",
+  "actions": [{
+    "mqtt":  {
+      "server": "tcp://broker.emqx.io:1883",
+      "topic": "device/gr/results"
+    }
+  }]
+}
+
+
+### 2. Create the rule to extract specific fields
+
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "sql": "SELECT * from demo;",
+  "actions": [{
+    "mqtt":  {
+      "server": "tcp://broker.emqx.io:1883",
+      "topic": "device/gr/results",
+      "format": "json",
+      "dataTemplate": "{{toJson .device}}",
+      "dataField": "data",
+      "fields": ["temperature", "humidity"],
+      "sendSingle": true
+    }
+  }]
+}
+
+
+### 3. Test data
+#{
+#  "device": {
+#    "id": 1,
+#    "data": {
+#      "temperature": 20,
+#        "humidity": 30,
+#      "time": "2020-06-13 12:00:00"
+#    },
+#    "location": "beijing"
+#  },
+#  "correlationId": "1234567890"
+#}
