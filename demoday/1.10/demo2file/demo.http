@@ -1,0 +1,163 @@
+#######
+#
+#  This demo shows how to use file sink to covert file type, configure rolling strategy, write in batch and compress file. It also demonstrates write to File & MQTT at the same time with compression.
+#  This demo has one rule with 2 file sinks. It reads from a json file and writes to 2 sinks: one writes to multiple csv files with rolling strategy and the other writes to a gzip file.
+#
+#######
+
+######## DEMO 1: FILE SINK Format & Rolling ########
+
+## 0. Upload the original source file and its protobuf schema to eKuiper data/uploads folder by UI or manually.
+
+### Check the uploaded files
+GET http://{{host}}/config/uploads
+Content-Type: application/json
+
+
+## 1. Create the stream to read the original source file MDFD.json
+
+## Modify the source configuration to use the uploaded file in data/sources/file.yaml
+```yaml
+jsonInUpload: path: data/uploads/
+fileType: json
+actionAfterRead: 0
+interval: 0
+sendInterval: 500
+```
+
+### Create the stream to read the original source file MDFD.json
+POST http://{{host}}/streams
+Content-Type: application/json
+
+{
+  "sql": "create stream mdfdStream () WITH (FORMAT=\"JSON\", DATASOURCE=\"MDFD.json\", TYPE=\"file\", SHARED=\"true\", CONF_KEY=\"jsonInUpload\")"
+}
+
+
+
+### 2. Create the rule to write to multiple csv files with rolling strategy and compress file
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "id": "ruleFile",
+  "name": "rule to write to file version 1",
+  "sql": "SELECT * FROM mdfdStream",
+  "actions": [
+    {
+      "file": {
+        "path": "rolling.csv",
+        "format": "delimited",
+        "delimiter": ",",
+        "hasHeader": true,
+        "fileType": "csv",
+        "rollingCount": 20,
+        "rollingInterval": 0,
+        "rollingNamePattern": "prefix",
+        "sendSingle": true
+      }
+    }
+  ]
+}
+
+### Other rolling setting
+## "rollingInterval": 60000,
+## "checkInterval": 6000,
+
+######## DEMO 2: FILE SINK Batch & Compression ########
+
+### Check registered protobuf schema
+GET http://{{host}}/schemas/protobuf
+Content-Type: application/json
+
+### Check registered protobuf schema
+GET http://{{host}}/schemas/protobuf/mdfd
+Content-Type: application/json
+
+### 3. Create the rule to write with pb format and compress
+PUT http://{{host}}/rules/ruleFile
+Content-Type: application/json
+
+{
+  "id": "ruleFile",
+  "name": "rule to write to file version 2",
+  "sql": "SELECT * FROM mdfdStream",
+  "actions": [
+    {
+      "file": {
+        "path": "rolling.gzip",
+        "format": "protobuf",
+        "schemaId": "mdfd.MDFD",
+        "fileType": "lines",
+        "rollingCount": 100,
+        "rollingInterval": 0,
+        "rollingNamePattern": "prefix",
+        "compression": "gzip",
+        "sendSingle": true
+      }
+    }
+  ]
+}
+
+#### 4. Stream to receive compressed data
+
+## update configuration in data/sources/mqtt.yaml
+```yaml
+decom:
+    decompression: zlib
+```
+
+### create the stream
+POST http://{{host}}/streams
+Content-Type: application/json
+
+{
+  "sql": "create stream resultStream () WITH (FORMAT=\"JSON\", DATASOURCE=\"result/compress\", TYPE=\"mqtt\", SHARED=\"true\", CONF_KEY=\"decom\")"
+}
+
+### 5. Create rule to decompress MQTT data
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "id": "ruleDecompress",
+  "name": "rule to decompress mqtt result",
+  "sql": "SELECT * FROM resultStream",
+  "actions": [{
+    "mqtt": {
+        "server": "{{mqtt}}",
+        "topic": "result/decompress"
+    }
+  }]
+}
+
+### 6. Create the rule to write to file & mqtt
+PUT http://{{host}}/rules/ruleFile
+Content-Type: application/json
+
+{
+  "id": "ruleFile",
+  "name": "rule to write to file version 2",
+  "sql": "SELECT * FROM mdfdStream",
+  "actions": [{
+    "file": {
+      "path": "rolling.zstd",
+      "format": "protobuf",
+      "schemaId": "mdfd.MDFD",
+      "fileType": "lines",
+      "rollingCount": 100,
+      "rollingInterval": 0,
+      "rollingNamePattern": "prefix",
+      "compression": "zstd",
+      "sendSingle": true
+    },
+    "mqtt": {
+        "server": "{{mqtt}}",
+        "topic": "result/compress",
+        "sendSingle": true,
+        "batchSize": 20,
+        "lingerInterval": 30000,
+        "compression": "zlib"
+    }
+  }]
+}
