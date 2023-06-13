@@ -1,0 +1,115 @@
+#######
+
+# 我的应用场景是做告警的过滤。 比如 temperature > 20 时产生告警level 1，<18 时，告警恢复。 流里面会有 temperature 21，22， 23 17 25这些记录， 21时产生一次告警， 22，23 时就不要再产生告警了。 17 时告警恢复， 25 时又产生告警。告警的消息用mqtt sink  out到告警的topic上。
+
+# 我的想法是第一次产生告警时（21），将告警状态记录为true，然后mqtt sink out。 后续值来时，用get_keyed_state查告警状态，如何是true，就不再产生下游消息。 17时，将告警状态更新为false
+
+# 流的消息格式 {"deviceId": 100, "temperature": 17 } 这种样子， deviceId 是会变化的。 在存告警状态时，以 deviceId做为key
+
+#######
+
+
+
+######
+
+
+#按照你的思路的话，需要两条规则配置
+
+#规则1: 告警监控
+#      根据存储状态 state 以及当前值 value 为条件
+#      如果 state == false && value > 18
+#               action: MQTT 告警
+#                       更新存储状态 state 为 true
+#
+#
+#规则2: 告警状态恢复
+#     当前值  value < 18 && state == true 时
+#              action: 存储状态 state 为 false
+
+
+#####
+
+### Create the stream
+### Create the stream to read the original source file MDFD.json
+POST http://{{host}}/streams
+Content-Type: application/json
+
+{
+  "sql": "create stream temperatureStream () WITH (FORMAT=\"JSON\", DATASOURCE=\"demo4_temperature\", TYPE=\"mqtt\")"
+}
+
+### create the rule to update state
+PUT http://{{host}}/rules/ruleUpdateState
+Content-Type: application/json
+
+{
+  "id": "ruleUpdateState",
+  "sql": "SELECT * FROM temperatureStream where temperature < 18",
+  "actions": [
+    {
+      "redis":{
+        "addr": "127.0.0.1:6379",
+        "password": "123456",
+        "db": 0,
+        "dataTemplate": "{\"{{.deviceId}}\": false}",
+        "dataType": "string",
+        "keyType": "multiple",
+        "sendSingle": true
+      }
+    }
+  ]
+}
+
+### create the rule to send alarm
+PUT http://{{host}}/rules/ruleAlarm
+Content-Type: application/json
+
+{
+  "id": "ruleAlarm",
+  "sql": "SELECT rule_id(), * FROM temperatureStream where get_keyed_state(deviceId, \"boolean\", false) = false and temperature > 20",
+  "actions": [
+    {
+      "redis":{
+        "addr": "127.0.0.1:6379",
+        "password": "123456",
+        "db": 0,
+        "dataTemplate": "{\"{{.deviceId}}\": true}",
+        "dataType": "string",
+        "keyType": "multiple",
+        "sendSingle": true
+      },
+      "mqtt": {
+        "server": "tcp://127.0.0.1:1883",
+        "topic": "alarm",
+        "qos": 1
+      }
+    }
+  ]
+}
+
+### create stream for map/array function
+POST http://{{host}}/streams
+Content-Type: application/json
+
+{
+  "sql": "create stream arrayStream () WITH (FORMAT=\"JSON\", DATASOURCE=\"demo4_array\", TYPE=\"mqtt\")"
+}
+
+
+### create the rule to send alarm
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "id": "ruleMapArray",
+  "sql": "SELECT array_contains(arr1, 1), items(object) FROM arrayStream",
+  "actions": [
+    {
+      "mqtt": {
+        "server": "tcp://127.0.0.1:1883",
+        "topic": "alarm",
+        "qos": 1
+      }
+    }
+  ]
+}
