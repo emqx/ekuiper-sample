@@ -1,0 +1,60 @@
+#######
+#
+# This demo demonstrates how to deploy schedule rule and check their status.
+#
+#######
+
+######## DEMO 1:  create the stream ########
+
+### 1. Create the stream
+POST http://{{host}}/streams
+Content-Type: application/json
+
+{
+  "sql": "create stream demo '() WITH (DATASOURCE=\"a.json\", FORMAT=\"json\", TYPE=\"file\")'"
+}
+
+### 2. Create the schedule rule
+
+POST http://{{host}}/rules
+Content-Type: application/json
+
+{
+  "id": "fileSinkRule",
+  "sql": "select a, format_time(tstamp(), \"YYYY/MM/dd HH:mm:ss\") from demo",
+  "actions": [
+    {
+      "log": {
+      },
+      "file": {
+        "path": "~/Download/result.json",
+        "fileType": "lines",
+        "format": "json"
+      }
+    }
+  ],
+  "options":{
+    "cron" : "@every 20s",
+    "duration": "10s"
+  }
+}
+
+### 3. Stop the schedule rule
+
+POST http://{{host}}/rules/fileSinkRule/stop
+Content-Type: application/json
+
+### 4. Check the schedule rule status
+
+GET http://{{host}}/rules/fileSinkRule/status
+Content-Type: application/json
+
+### 5. Start the schedule rule
+
+POST http://{{host}}/rules/fileSinkRule/start
+Content-Type: application/json
+
+### 6. Check the schedule rule status
+
+GET http://{{host}}/rules/fileSinkRule/status
+Content-Type: application/json
